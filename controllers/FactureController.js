@@ -46,7 +46,7 @@ const sendInvoiceEmail = async (req, res) => {
 
   const subject = "Votre facture pour votre commande";
   const text = `Bonjour, voici votre facture pour la commande ${factureId}.`;
-  const html = `<h1>Facture ${factureId}</h1><p>Merci d'avoir effectué un achat chez nous.</p><p><a href="http://votresite.com/facture/${factureId}">Voir la facture complète</a></p>`;
+  const html = `<h1>Facture ${factureId}</h1><p>Merci d'avoir effectué un achat chez nous.</p><p><a href="http://artiz/facture/${factureId}">Voir la facture complète</a></p>`;
 
   try {
     await sendEmail(email, subject, text, html);

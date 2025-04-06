@@ -1,5 +1,5 @@
 const { models } = require("../models");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs"); // ✅ Remplacement ici
 const jwt = require("jsonwebtoken");
 
 /**
@@ -17,7 +17,7 @@ exports.registerClient = async (req, res) => {
     }
 
     // Hash du mot de passe et création de l'utilisateur
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10); // ✅ bcryptjs utilisé ici
     const utilisateur = await models.Utilisateur.create({
       nom,
       email,
@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
     }
 
     // Vérification du mot de passe
-    const isMatch = await bcrypt.compare(password, utilisateur.password);
+    const isMatch = await bcryptjs.compare(password, utilisateur.password); // ✅ bcryptjs utilisé ici
     if (!isMatch) {
       return res.status(401).json({ message: "Mot de passe incorrect" });
     }
@@ -93,7 +93,6 @@ exports.updateProfile = async (req, res) => {
  */
 exports.deleteUtilisateur = async (req, res) => {
   try {
-    // Vérification des droits d'accès
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Accès interdit" });
     }
@@ -101,7 +100,6 @@ exports.deleteUtilisateur = async (req, res) => {
     const utilisateur = await models.Utilisateur.findByPk(req.params.id);
     if (!utilisateur) return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-    // Suppression des commandes associées avant de supprimer l'utilisateur
     await models.Commande.destroy({ where: { utilisateurId: utilisateur.id } });
     await utilisateur.destroy();
 
